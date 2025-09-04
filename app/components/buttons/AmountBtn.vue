@@ -7,10 +7,10 @@
             },
         ]"
     >
-        <button @click="emit('remove')"><RemoveIcon :small="small" /></button>
+        <button @click="$emit('remove')"><RemoveIcon :small="small" /></button>
         <p v-if="!small">{{ amount }}</p>
         <h5 v-else>{{ amount }}</h5>
-        <button @click="emit('add')"><AddIcon :small="small" /></button>
+        <button @click="$emit('add')"><AddIcon :small="small" /></button>
     </div>
 </template>
 
@@ -23,7 +23,7 @@ defineProps<{
     small?: boolean;
 }>();
 
-const emit = defineEmits(["remove", "add"]);
+defineEmits(["remove", "add"]);
 </script>
 
 <style scoped></style>

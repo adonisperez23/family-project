@@ -1,5 +1,8 @@
 <template>
-    <div @click="openModal" class="flex flex-col gap-[16px]">
+    <div
+        @click="openModal"
+        class="flex flex-col gap-[16px] hover:translate-y-[-12px] active-hover"
+    >
         <picture>
             <source type="image/avif" :srcset="img_avif_url" />
             <source type="image/jpeg" :srcset="img_url" />
@@ -10,34 +13,68 @@
             />
         </picture>
         <div class="flex flex-col gap-[8px]">
-            <h2 class="hover:underline whitespace-nowrap">{{ name }}</h2>
+            <div class="flex items-center">
+                <h2 class="whitespace-nowrap underline-hover-effect">
+                    {{ name }}
+                </h2>
+            </div>
             <p>${{ price }}</p>
         </div>
-        <div v-if="_open_modal">
-            <ModalProduct v-on:close="closeModal" />
-        </div>
     </div>
+    <ModalProduct
+        v-if="_open_modal"
+        :product="{
+            product: $props,
+            subtotal: $props.price,
+            amount: 1,
+            contornos: [],
+            bebidas: [],
+            extras: [],
+        }"
+        v-on:close="closeModal"
+    />
 </template>
 
 <script setup lang="ts">
 import type { Product } from "~/types/Product";
 import ModalProduct from "../modal/ModalProduct.vue";
 
-defineProps<Product>();
+const $props = defineProps<Product>();
 
 const _open_modal = ref(false);
 
 function closeModal() {
-    console.log("closing modal", _open_modal.value);
     _open_modal.value = false;
-    console.log("closing modal", _open_modal.value);
-    console.log("closing modal", _open_modal.value);
 }
 
 function openModal() {
-    console.log("open modal", _open_modal.value);
     _open_modal.value = true;
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.underline-hover-effect {
+    position: relative;
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.underline-hover-effect::before {
+    content: "";
+    position: absolute;
+    width: 100%; /* El ancho es siempre 100% */
+    height: 1px;
+    bottom: 0px;
+    left: 0;
+    background-color: black;
+    transform: scaleX(0); /* Escala inicial: 0 */
+    transform-origin: bottom left; /* Punto de origen de la transformación */
+    transition: transform 0.3s ease-in-out;
+}
+
+.active-hover:hover .underline-hover-effect::before {
+    transform: scaleX(1); /* Escala final: 1 (se expande) */
+}
+</style>
